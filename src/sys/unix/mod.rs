@@ -449,7 +449,7 @@ impl Socket {
 
     pub fn unicast_hops_v6(&self) -> io::Result<u32> {
         unsafe {
-            let raw: c_int = self.getsockopt(libc::IPPROTO_IPV6, libc::IPV6_UNICAST_HOPS)?;
+            let raw: c_int = self.getsockopt(libc::IPPROTO_IPV6, 27)?;
             Ok(raw as u32)
         }
     }
@@ -458,7 +458,7 @@ impl Socket {
         unsafe {
             self.setsockopt(
                 libc::IPPROTO_IPV6 as c_int,
-                libc::IPV6_UNICAST_HOPS,
+                27,
                 hops as c_int,
             )
         }
@@ -559,19 +559,19 @@ impl Socket {
 
     pub fn multicast_hops_v6(&self) -> io::Result<u32> {
         unsafe {
-            let raw: c_int = self.getsockopt(libc::IPPROTO_IPV6, libc::IPV6_MULTICAST_HOPS)?;
+            let raw: c_int = self.getsockopt(libc::IPPROTO_IPV6, 25)?;
             Ok(raw as u32)
         }
     }
 
     pub fn set_multicast_hops_v6(&self, hops: u32) -> io::Result<()> {
-        unsafe { self.setsockopt(libc::IPPROTO_IPV6, libc::IPV6_MULTICAST_HOPS, hops as c_int) }
+        unsafe { self.setsockopt(libc::IPPROTO_IPV6, 25, hops as c_int) }
     }
 
     pub fn multicast_if_v4(&self) -> io::Result<Ipv4Addr> {
         unsafe {
             let imr_interface: libc::in_addr =
-                self.getsockopt(libc::IPPROTO_IP, libc::IP_MULTICAST_IF)?;
+                self.getsockopt(libc::IPPROTO_IP, 9)?;
             Ok(from_s_addr(imr_interface.s_addr))
         }
     }
@@ -580,12 +580,12 @@ impl Socket {
         let interface = to_s_addr(interface);
         let imr_interface = libc::in_addr { s_addr: interface };
 
-        unsafe { self.setsockopt(libc::IPPROTO_IP, libc::IP_MULTICAST_IF, imr_interface) }
+        unsafe { self.setsockopt(libc::IPPROTO_IP, 9, imr_interface) }
     }
 
     pub fn multicast_if_v6(&self) -> io::Result<u32> {
         unsafe {
-            let raw: c_int = self.getsockopt(libc::IPPROTO_IPV6, libc::IPV6_MULTICAST_IF)?;
+            let raw: c_int = self.getsockopt(libc::IPPROTO_IPV6, 24)?;
             Ok(raw as u32)
         }
     }
@@ -594,7 +594,7 @@ impl Socket {
         unsafe {
             self.setsockopt(
                 libc::IPPROTO_IPV6,
-                libc::IPV6_MULTICAST_IF,
+                24,
                 interface as c_int,
             )
         }
